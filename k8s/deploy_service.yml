@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind : Deployment
+metadata:
+  name: demo-new
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-test
+  template:
+    metadata:
+      labels:
+        app: demo-test
+    spec:
+      containers:
+        - name: demo-test
+          image: ghcr.io/riyaknol11/cicd-gke-deployment:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+      imagePullSecrets:
+        - name: pullsecret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-test
+spec:
+  selector:
+    app: demo-test
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
